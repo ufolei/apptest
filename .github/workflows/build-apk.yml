@@ -37,18 +37,29 @@ jobs:
         ls -la $ANDROID_HOME
         ls -la $ANDROID_NDK_HOME
     
-    - name: Build APK with verbose output
-      run: buildozer android debug apk --verbose 2>&1 | tail -500
-    
-    - name: Find and list APK files
+    - name: Build APK (full output)
       run: |
-        find . -name "*.apk" -type f 2>/dev/null | head -20
-        ls -la .buildozer/android/platform/build-*/dists/*/build/outputs/apk/debug/ 2>/dev/null || echo "APK dir not found"
+        buildozer android debug apk 2>&1
+    
+    - name: Debug - List all files in build directory
+      run: |
+        echo "=== Current directory ==="
+        ls -la
+        echo ""
+        echo "=== Looking for APK files ==="
+        find . -name "*.apk" -type f 2>/dev/null
+        echo ""
+        echo "=== Buildozer directory structure ==="
+        ls -la .buildozer/ 2>/dev/null || echo "No buildozer dir"
+        ls -la .buildozer/android/ 2>/dev/null || echo "No android dir"
+        ls -la .buildozer/android/platform/ 2>/dev/null || echo "No platform dir"
+        echo ""
+        echo "=== Checking dists ==="
+        ls -la .buildozer/android/platform/build-*/dists/ 2>/dev/null || echo "No dists dir"
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: myapp-apk
         path: |
-          .buildozer/android/platform/build-*/dists/*/build/outputs/apk/debug/*.apk
-          bin/*.apk
+          **/*.apk
