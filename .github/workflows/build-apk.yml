@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     steps:
     - uses: actions/checkout@v4
 
@@ -23,8 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install buildozer Cython kivy
 
-    # 🔥 强制清空系统 Android 环境，让 buildozer 自己装正确版本
-    - name: Unset system Android env
+    - name: Clean Android Env
       run: |
         echo "ANDROID_HOME=" >> $GITHUB_ENV
         echo "ANDROID_NDK_HOME=" >> $GITHUB_ENV
@@ -35,8 +35,8 @@ jobs:
       run: |
         buildozer android debug
 
-    - name: Find APK
-      run: find . -name *.apk
+    - name: List APK
+      run: ls -la bin/
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
