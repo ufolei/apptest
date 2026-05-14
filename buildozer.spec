@@ -10,6 +10,8 @@ android.permissions = INTERNET
 android.api = 33
 android.ndk = 25
 android.ndk_api = 25
+android.accept_sdk_license = True
+android.build_tools_version = 33.0.2
 
 [buildozer]
 log_level = 2
